@@ -50,7 +50,7 @@ class LightAndShadowPainter extends CustomPainter {
 
     // Draw ambient light with radial gradient
     var gradient = RadialGradient(
-      colors: [Color.fromARGB(155, 220, 219, 211).withAlpha(50), Colors.transparent],
+      colors: [Color.fromARGB(155, 220, 219, 211).withAlpha(80), Colors.transparent],
       stops: [0.0, 1.0],
     );
 

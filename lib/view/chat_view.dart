@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gemini2/elements/element.dart';
+import 'package:gemini2/elements/shape.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class ChatView extends StatefulWidget {
@@ -13,16 +14,57 @@ class _ChatViewState extends State<ChatView> {
   final model = GenerativeModel(
       model: 'gemini-pro', apiKey: "AIzaSyBMxju6DQRU81wgfft6iIFFmiceCqC8Ghc");
   String? response;
+  String? quoteText;
+  String? quoteName;
+  bool isLoading = false;
+  bool fetchNewQuote = true;
+
+  late double opacityLevel;
+
+  @override
+  void initState() {
+    setState(() {
+      opacityLevel = 1.0;
+    });
+    super.initState();
+  }
 
   void submit() async {
+    setState(() {
+      isLoading = true;
+    });
     const prompt = 'Write a quote.';
     final content = [Content.text(prompt)];
     final contentResponse = await model.generateContent(content);
 
     setState(() {
-      response = contentResponse.text;
+      isLoading = false;
     });
+
+    response = contentResponse.text ?? '';
+
+    List<String> quoteParts = response!.split('-');
+
+    quoteText = quoteParts[0];
+    quoteName = quoteParts[1];
+
+    // setState(() {
+    //   opacityLevel = 1.0;
+    // });
     // print(response.text);
+    resetOpacity();
+  }
+
+  void onEndTextAnimation() {
+    if (opacityLevel == 0) {
+      submit();
+    }
+  }
+
+  void resetOpacity() {
+    setState(() {
+      opacityLevel = opacityLevel == 1.0 ? 0.0 : 1.0;
+    });
   }
 
   @override
@@ -44,20 +86,57 @@ class _ChatViewState extends State<ChatView> {
                   child: Center(
                       child: Padding(
                 padding: const EdgeInsets.all(28.0),
-                child: Text(
-                  response ?? '',
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width * 0.06,
-                    color: Color.fromARGB(214, 241, 235, 235),
-                    shadows: <Shadow>[
-                      Shadow(
-                        offset: Offset(5.0, 5.0),
-                        blurRadius: 30.0,
-                        color: Color.fromARGB(255, 30, 30, 30), // Choose the glow color
+                child: isLoading
+                    ? const CircularProgressIndicator(
+                        color: Color.fromARGB(255, 174, 155, 131),
+                      )
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AnimatedOpacity(
+                            opacity: opacityLevel,
+                            duration: Duration(seconds: 1),
+                            child: Text(
+                              quoteText ?? 'Lorem ipsum dolor sit amet.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.06,
+                                color: Color.fromARGB(214, 241, 235, 235),
+                                shadows: <Shadow>[
+                                  Shadow(
+                                    offset: Offset(5.0, 5.0),
+                                    blurRadius: 30.0,
+                                    color: Color.fromARGB(255, 30, 30,
+                                        30), // Choose the glow color
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          AnimatedOpacity(
+                            duration: Duration(seconds: 2),
+                            onEnd: () => onEndTextAnimation(),
+                            opacity: opacityLevel,
+                            child: Text(
+                              '-$quoteName' ?? '- Unknown',
+                              style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.05,
+                                color: Color.fromARGB(214, 241, 235, 235),
+                                shadows: <Shadow>[
+                                  Shadow(
+                                    offset: Offset(5.0, 5.0),
+                                    blurRadius: 30.0,
+                                    color: Color.fromARGB(255, 30, 30,
+                                        30), // Choose the glow color
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
               ))),
               Center(
                   child: Padding(
@@ -67,10 +146,15 @@ class _ChatViewState extends State<ChatView> {
                       backgroundColor: MaterialStateProperty.all(
                           Color.fromARGB(255, 174, 155, 131))),
                   child: Text(
-                    "Submit",
+                    "Quote",
                     style: TextStyle(color: Colors.black),
                   ),
-                  onPressed: () => submit(),
+                  onPressed: () {
+                    if(opacityLevel == 1.0){
+                      resetOpacity();
+                    }
+                    
+                  },
                 ),
               )),
             ],
