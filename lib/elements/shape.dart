@@ -8,7 +8,7 @@ class GeminiLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: CustomPaint(
-        size: Size(200, 200),
+        size: const Size(200, 200),
         painter: MyCustomPainter(),
       ),
     );
@@ -25,11 +25,11 @@ class MyCustomPainter extends CustomPainter {
     Path path = Path();
 
     // Define the points of the star
-    final numberOfPoints = 5;
+    const numberOfPoints = 5;
     final outerRadius = size.width / 2;
     final innerRadius = outerRadius / 2;
-    final angle = (math.pi * 2) / numberOfPoints;
-    final halfAngle = angle / 2;
+    const angle = (math.pi * 2) / numberOfPoints;
+    const halfAngle = angle / 2;
     final center = Offset(size.width / 2, size.height / 2);
 
     // Move to the top of the star
