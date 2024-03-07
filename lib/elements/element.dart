@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 
 
 class AmbientBackground extends StatefulWidget {
+  const AmbientBackground({super.key});
+
   @override
   _AmbientBackgroundState createState() => _AmbientBackgroundState();
 }
@@ -18,7 +20,7 @@ class _AmbientBackgroundState extends State<AmbientBackground> {
   void initState() {
     super.initState();
     // Update the position of the light and reverse direction at edges
-    Timer.periodic(Duration(milliseconds: 100), (timer) {
+    Timer.periodic(const Duration(milliseconds: 100), (timer) {
       setState(() {
         lightPosition += increment;
         if (lightPosition > 1.0 || lightPosition < 0.0) {
@@ -50,8 +52,8 @@ class LightAndShadowPainter extends CustomPainter {
 
     // Draw ambient light with radial gradient
     var gradient = RadialGradient(
-      colors: [Color.fromARGB(155, 220, 219, 211).withAlpha(80), Colors.transparent],
-      stops: [0.0, 1.0],
+      colors: [const Color.fromARGB(155, 220, 219, 211).withAlpha(80), Colors.transparent],
+      stops: const [0.0, 1.0],
     );
 
     var rect = Rect.fromCircle(center: center, radius: radius);

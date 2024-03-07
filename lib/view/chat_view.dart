@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gemini2/elements/element.dart';
-import 'package:gemini2/elements/shape.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class ChatView extends StatefulWidget {
@@ -73,13 +72,13 @@ class _ChatViewState extends State<ChatView> {
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     colors: [Color.fromARGB(255, 39, 57, 65), Colors.grey])),
           ),
-          AmbientBackground(),
+          const AmbientBackground(),
           Column(
             children: [
               Expanded(
@@ -95,15 +94,15 @@ class _ChatViewState extends State<ChatView> {
                         children: [
                           AnimatedOpacity(
                             opacity: opacityLevel,
-                            duration: Duration(seconds: 1),
+                            duration: const Duration(seconds: 1),
                             child: Text(
                               quoteText ?? 'Lorem ipsum dolor sit amet.',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize:
                                     MediaQuery.of(context).size.width * 0.06,
-                                color: Color.fromARGB(214, 241, 235, 235),
-                                shadows: <Shadow>[
+                                color: const Color.fromARGB(214, 241, 235, 235),
+                                shadows: const <Shadow>[
                                   Shadow(
                                     offset: Offset(5.0, 5.0),
                                     blurRadius: 30.0,
@@ -115,7 +114,7 @@ class _ChatViewState extends State<ChatView> {
                             ),
                           ),
                           AnimatedOpacity(
-                            duration: Duration(seconds: 2),
+                            duration: const Duration(seconds: 2),
                             onEnd: () => onEndTextAnimation(),
                             opacity: opacityLevel,
                             child: Text(
@@ -123,8 +122,8 @@ class _ChatViewState extends State<ChatView> {
                               style: TextStyle(
                                 fontSize:
                                     MediaQuery.of(context).size.width * 0.05,
-                                color: Color.fromARGB(214, 241, 235, 235),
-                                shadows: <Shadow>[
+                                color: const Color.fromARGB(214, 241, 235, 235),
+                                shadows: const <Shadow>[
                                   Shadow(
                                     offset: Offset(5.0, 5.0),
                                     blurRadius: 30.0,
@@ -140,12 +139,12 @@ class _ChatViewState extends State<ChatView> {
               ))),
               Center(
                   child: Padding(
-                padding: EdgeInsets.all(28.0),
+                padding: const EdgeInsets.all(28.0),
                 child: ElevatedButton(
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                          Color.fromARGB(255, 174, 155, 131))),
-                  child: Text(
+                          const Color.fromARGB(255, 174, 155, 131))),
+                  child: const Text(
                     "Quote",
                     style: TextStyle(color: Colors.black),
                   ),
