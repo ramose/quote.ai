@@ -2,16 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:gemini2/elements/element.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
-class ChatView extends StatefulWidget {
-  const ChatView({super.key});
+class QuoteView extends StatefulWidget {
+  const QuoteView({super.key});
 
   @override
-  State<ChatView> createState() => _ChatViewState();
+  State<QuoteView> createState() => _QuoteViewState();
 }
 
-class _ChatViewState extends State<ChatView> {
+class _QuoteViewState extends State<QuoteView> {
   final model = GenerativeModel(
-      model: 'gemini-pro', apiKey: "AIzaSyBMxju6DQRU81wgfft6iIFFmiceCqC8Ghc");
+      model: 'gemini-pro',
+      apiKey: "YOUR-API-KEY-HERE",
+      safetySettings: [
+        SafetySetting(HarmCategory.dangerousContent, HarmBlockThreshold.high),
+        SafetySetting(HarmCategory.harassment, HarmBlockThreshold.high),
+        SafetySetting(HarmCategory.hateSpeech, HarmBlockThreshold.high),
+      ]);
   String? response;
   String? quoteText;
   String? quoteName;
@@ -32,7 +38,7 @@ class _ChatViewState extends State<ChatView> {
     setState(() {
       isLoading = true;
     });
-    const prompt = 'Write a sarcasm quote.';
+    const prompt = 'Write a funny quote.';
     final content = [Content.text(prompt)];
     final contentResponse = await model.generateContent(content);
 
@@ -40,86 +46,53 @@ class _ChatViewState extends State<ChatView> {
       isLoading = false;
     });
 
+    print('--> length: ${contentResponse.candidates.length}');
+
     response = contentResponse.text ?? '';
 
     // todo: check if response have quote maker
     // suggestion: just write the quote
-    List<String> quoteParts = response!.split('-');
+    // List<String> quoteParts = response!.split('-');
 
-    quoteText = quoteParts[0];
-    quoteName = quoteParts[1];
-
-    // setState(() {
-    //   opacityLevel = 1.0;
-    // });
-    // print(response.text);
-    resetOpacity();
-  }
-
-  void onEndTextAnimation() {
-    if (opacityLevel == 0) {
-      submit();
-    }
-  }
-
-  void resetOpacity() {
-    setState(() {
-      opacityLevel = opacityLevel == 1.0 ? 0.0 : 1.0;
-    });
+    quoteText = response;
+    // quoteName = quoteParts[1];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [Color.fromARGB(255, 39, 57, 65), Colors.grey])),
-          ),
-          const AmbientBackground(),
-          Column(
-            children: [
-              Expanded(
-                  child: Center(
-                      child: Padding(
-                padding: const EdgeInsets.all(28.0),
-                child: isLoading
-                    ? const CircularProgressIndicator(
-                        color: Color.fromARGB(255, 174, 155, 131),
-                      )
-                    : Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          AnimatedOpacity(
-                            opacity: opacityLevel,
-                            duration: const Duration(seconds: 1),
-                            child: Text(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Container(
+              color: Colors.white,
+            ),
+            Column(
+              children: [
+                Center(
+                  child: Text('quote.ai'),
+                ),
+                Expanded(
+                    child: Center(
+                        child: Padding(
+                  padding: const EdgeInsets.all(28.0),
+                  child: isLoading
+                      ? const CircularProgressIndicator(
+                          color: Colors.black,
+                        )
+                      : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
                               quoteText ?? '',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize:
                                     MediaQuery.of(context).size.width * 0.06,
-                                color: const Color.fromARGB(214, 241, 235, 235),
-                                shadows: const <Shadow>[
-                                  Shadow(
-                                    offset: Offset(5.0, 5.0),
-                                    blurRadius: 30.0,
-                                    color: Color.fromARGB(255, 30, 30,
-                                        30), // Choose the glow color
-                                  ),
-                                ],
+                                color: Colors.black,
                               ),
                             ),
-                          ),
-                          AnimatedOpacity(
-                            duration: const Duration(seconds: 2),
-                            onEnd: () => onEndTextAnimation(),
-                            opacity: opacityLevel,
-                            child: Text(
+                            Text(
                               quoteName != null ? '-$quoteName' : '',
                               style: TextStyle(
                                 fontSize:
@@ -135,32 +108,42 @@ class _ChatViewState extends State<ChatView> {
                                 ],
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-              ))),
-              Center(
-                  child: Padding(
-                padding: const EdgeInsets.all(28.0),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          const Color.fromARGB(255, 174, 155, 131))),
-                  child: const Text(
-                    "Quote",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  onPressed: () {
-                    if (opacityLevel == 1.0) {
-                      resetOpacity();
-                    }
-                  },
-                ),
-              )),
-            ],
-          ),
-        ],
+                          ],
+                        ),
+                ))),
+                // Center(
+                //     child: Padding(
+                //   padding: const EdgeInsets.all(28.0),
+                //   child: ElevatedButton(
+                //     style: ButtonStyle(
+                //         backgroundColor: MaterialStateProperty.all(
+                //             const Color.fromARGB(255, 174, 155, 131))),
+                //     child: const Text(
+                //       "Q",
+                //       style: TextStyle(color: Colors.black),
+                //     ),
+                //     onPressed: () {},
+                //   ),
+                // )),
+              ],
+            ),
+          ],
+        ),
       ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(38.0),
+        child: FloatingActionButton(
+          mini: true,
+          onPressed: () => submit(),
+          backgroundColor: Colors.black,
+          // child: Text(
+          //   "Q",
+          //   style: TextStyle(
+          //       color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
+          // ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
