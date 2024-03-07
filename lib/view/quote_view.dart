@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gemini2/elements/element.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
 class QuoteView extends StatefulWidget {
@@ -20,34 +19,22 @@ class _QuoteViewState extends State<QuoteView> {
       ]);
   String? response;
   String? quoteText;
-  String? quoteName;
   bool isLoading = false;
-  bool fetchNewQuote = true;
-
-  late double opacityLevel;
-
-  @override
-  void initState() {
-    setState(() {
-      opacityLevel = 1.0;
-    });
-    super.initState();
-  }
 
   void submit() async {
     setState(() {
       isLoading = true;
     });
+
     const prompt = 'Write a funny quote.';
     final content = [Content.text(prompt)];
     final contentResponse = await model.generateContent(content);
 
     setState(() {
       isLoading = false;
+      response = contentResponse.text ?? '';
+      quoteText = response;
     });
-
-    response = contentResponse.text ?? '';
-    quoteText = response;
   }
 
   @override
@@ -61,7 +48,7 @@ class _QuoteViewState extends State<QuoteView> {
             ),
             Column(
               children: [
-                Center(
+                const Center(
                   child: Text('quote.ai'),
                 ),
                 Expanded(
@@ -84,39 +71,9 @@ class _QuoteViewState extends State<QuoteView> {
                                 color: Colors.black,
                               ),
                             ),
-                            Text(
-                              quoteName != null ? '-$quoteName' : '',
-                              style: TextStyle(
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.05,
-                                color: const Color.fromARGB(214, 241, 235, 235),
-                                shadows: const <Shadow>[
-                                  Shadow(
-                                    offset: Offset(5.0, 5.0),
-                                    blurRadius: 30.0,
-                                    color: Color.fromARGB(255, 30, 30,
-                                        30), // Choose the glow color
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
                         ),
                 ))),
-                // Center(
-                //     child: Padding(
-                //   padding: const EdgeInsets.all(28.0),
-                //   child: ElevatedButton(
-                //     style: ButtonStyle(
-                //         backgroundColor: MaterialStateProperty.all(
-                //             const Color.fromARGB(255, 174, 155, 131))),
-                //     child: const Text(
-                //       "Q",
-                //       style: TextStyle(color: Colors.black),
-                //     ),
-                //     onPressed: () {},
-                //   ),
-                // )),
               ],
             ),
           ],
@@ -126,13 +83,10 @@ class _QuoteViewState extends State<QuoteView> {
         padding: const EdgeInsets.all(38.0),
         child: FloatingActionButton(
           mini: true,
-          onPressed: () => submit(),
+          onPressed: () {
+            if (!isLoading) submit();
+          },
           backgroundColor: Colors.black,
-          // child: Text(
-          //   "Q",
-          //   style: TextStyle(
-          //       color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
-          // ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

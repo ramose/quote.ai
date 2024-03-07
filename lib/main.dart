@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gemini2/view/chat_view.dart';
+import 'package:gemini2/view/quote_view.dart';
 
 void main() {
   runApp(const MyApp());
