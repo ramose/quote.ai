@@ -46,16 +46,8 @@ class _QuoteViewState extends State<QuoteView> {
       isLoading = false;
     });
 
-    print('--> length: ${contentResponse.candidates.length}');
-
     response = contentResponse.text ?? '';
-
-    // todo: check if response have quote maker
-    // suggestion: just write the quote
-    // List<String> quoteParts = response!.split('-');
-
     quoteText = response;
-    // quoteName = quoteParts[1];
   }
 
   @override
