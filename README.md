@@ -1,7 +1,5 @@
 # gemini quote app
 
-Quote app with Gemini integration.
+Flutter Quote app with Gemini integration.
 
-## Info
-
-Gemini will generate quote based on the context.
+https://pub.dev/packages/google_generative_ai
